@@ -1,0 +1,65 @@
+{
+  "name": "LaTeX Editor",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "editor",
+  "workspaceFolder": "/workspace",
+  "postCreateCommand": {
+    "gitSafeDir": "git config --global --add safe.directory ${containerWorkspaceFolder}"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["esbenp.prettier-vscode", "James-Yu.latex-workshop"],
+      "settings": {
+        "latex-workshop.latex.autoBuild.run": "onSave",
+        "latex-workshop.latex.recipe.default": "xelatex -> bibtex -> xelatex*2",
+        "latex-workshop.latex.tools": [
+          {
+            "name": "xelatex",
+            "command": "xelatex",
+            "args": [
+              "-synctex=1",
+              "-interaction=nonstopmode",
+              "-file-line-error",
+              "-output-directory=/workspace/build",
+              "%DOC%"
+            ]
+          },
+          {
+            "name": "latexmk",
+            "command": "latexmk",
+            "args": [
+              "-xelatex",
+              "-synctex=1",
+              "-interaction=nonstopmode",
+              "-file-line-error",
+              "-output-directory=/workspace/build",
+              "%DOC%"
+            ]
+          },
+          {
+            "name": "bibtex",
+            "command": "bibtex",
+            "args": ["/workspace/build/%DOCFILE%"]
+          }
+        ],
+        "latex-workshop.latex.recipes": [
+          {
+            "name": "xelatex",
+            "tools": ["xelatex"]
+          },
+          {
+            "name": "xelatex -> bibtex -> xelatex*2",
+            "tools": ["xelatex", "bibtex", "xelatex", "xelatex"]
+          },
+          {
+            "name": "latexmk",
+            "tools": ["latexmk"]
+          }
+        ],
+        "latex-workshop.view.pdf.viewer": "tab",
+        "latex-workshop.view.pdf.filePath": "build/%DOCFILE%.pdf",
+        "latex-workshop.latex.watch.files.ignore": ["/workspace/src/def/**"]
+      }
+    }
+  }
+}
